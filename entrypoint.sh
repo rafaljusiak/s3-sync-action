@@ -32,6 +32,11 @@ if [ -n "$AWS_S3_CACHE_CONTROL_MAX_AGE" ]; then
   CACHE_CONTROL="--cache-control \"public, max-age=$AWS_S3_CACHE_CONTROL_MAX_AGE\""
 fi
 
+# Set content encoding.
+if [ -n "$AWS_S3_CONTENT_ENCODING" ]; then
+  CONTENT_ENCODING="--content-encoding $AWS_S3_CONTENT_ENCODING"
+fi
+
 # Create a dedicated profile for this action to avoid conflicts
 # with past/future actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -47,7 +52,7 @@ EOF
 sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               --profile s3-sync-action \
               --no-progress \
-              ${ENDPOINT_APPEND} ${CACHE_CONTROL} $*"
+              ${ENDPOINT_APPEND} ${CACHE_CONTROL} ${CONTENT_ENCODING} $*"
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of
