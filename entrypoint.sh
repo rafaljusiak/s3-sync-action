@@ -29,7 +29,7 @@ fi
 
 # Set cache control for objects.
 if [ -n "$AWS_S3_CACHE_CONTROL_MAX_AGE" ]; then
-  CACHE_CONTROL="--cache-control "public, max-age=$AWS_S3_CACHE_CONTROL_MAX_AGE"
+  CACHE_CONTROL="--cache-control \"public, max-age=$AWS_S3_CACHE_CONTROL_MAX_AGE\""
 fi
 
 # Create a dedicated profile for this action to avoid conflicts
