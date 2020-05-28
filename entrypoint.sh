@@ -27,6 +27,11 @@ if [ -n "$AWS_S3_ENDPOINT" ]; then
   ENDPOINT_APPEND="--endpoint-url $AWS_S3_ENDPOINT"
 fi
 
+# Set cache control for objects.
+if [ -n "$AWS_S3_CACHE_CONTROL_MAX_AGE" ]; then
+  CACHE_CONTROL="--cache-control "public, max-age=$AWS_S3_CACHE_CONTROL_MAX_AGE"
+fi
+
 # Create a dedicated profile for this action to avoid conflicts
 # with past/future actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -42,7 +47,7 @@ EOF
 sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               --profile s3-sync-action \
               --no-progress \
-              ${ENDPOINT_APPEND} $*"
+              ${ENDPOINT_APPEND} ${CACHE_CONTROL} $*"
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of
